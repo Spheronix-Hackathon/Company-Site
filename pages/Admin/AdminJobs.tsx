@@ -96,7 +96,8 @@ const AdminJobs: React.FC<AdminJobsProps> = ({ token }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const url = isEditing ? `/api/jobs/${currentJobId}` : `${import.meta.env.VITE_API_URL || 'https://company-site-1eac.onrender.com/api'}` + '/jobs';
+      const baseUrl = import.meta.env.VITE_API_URL || 'https://company-site-1eac.onrender.com/api';
+      const url = isEditing ? `${baseUrl}/jobs/${currentJobId}` : `${baseUrl}/jobs`;
       const method = isEditing ? 'PUT' : 'POST';
       
       const res = await fetch(url, {
