@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: spheronix-technology-app
+    env: node
+    # Use the root directory since the frontend and backend are in the same repo
+    rootDir: .
+    # Install root packages, build the Vite frontend, then install server packages
+    buildCommand: npm install && npm run build && cd server && npm install
+    # Start the Express server (which serves the built React app)
+    startCommand: cd server && npm start
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MONGO_URI
+        sync: false # You must set this manually in the Render dashboard
