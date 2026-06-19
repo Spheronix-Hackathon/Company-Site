@@ -106,16 +106,29 @@ const AdminApplications: React.FC<AdminApplicationsProps> = ({ token }) => {
                ) : applications.length === 0 ? (
                  <div className="p-8 text-center text-slate-400">No applications yet.</div>
                ) : (
-                 applications.map(app => (
-                   <button 
-                     key={app._id}
-                     onClick={() => setSelectedApp(app)}
-                     className={`w-full text-left p-4 rounded-2xl mb-2 transition-all ${selectedApp?._id === app._id ? 'bg-violet-600/20 border border-violet-500/30' : 'hover:bg-white/5 border border-transparent'}`}
-                   >
-                     <div className="font-bold text-white text-sm mb-1">{app.name}</div>
-                     <div className="text-xs text-violet-400 font-bold mb-2">{app.jobTitle || app.applyingPosition}</div>
-                     <div className="text-[10px] text-slate-500 uppercase tracking-wider">{new Date(app.createdAt).toLocaleDateString()}</div>
-                   </button>
+                 Object.entries(
+                   applications.reduce((acc, app) => {
+                     const role = app.jobTitle || app.applyingPosition || 'Other Roles';
+                     if (!acc[role]) acc[role] = [];
+                     acc[role].push(app);
+                     return acc;
+                   }, {} as Record<string, ApplicationData[]>)
+                 ).map(([role, apps]) => (
+                   <div key={role} className="mb-6">
+                     <div className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 px-2 border-b border-white/5 pb-2">
+                       {role} <span className="text-violet-400 ml-1">({apps.length})</span>
+                     </div>
+                     {apps.map(app => (
+                       <button 
+                         key={app._id}
+                         onClick={() => setSelectedApp(app)}
+                         className={`w-full text-left p-4 rounded-2xl mb-2 transition-all ${selectedApp?._id === app._id ? 'bg-violet-600/20 border border-violet-500/30' : 'hover:bg-white/5 border border-transparent'}`}
+                       >
+                         <div className="font-bold text-white text-sm mb-1">{app.name}</div>
+                         <div className="text-[10px] text-slate-500 uppercase tracking-wider">{new Date(app.createdAt).toLocaleDateString()}</div>
+                       </button>
+                     ))}
+                   </div>
                  ))
                )}
              </div>
