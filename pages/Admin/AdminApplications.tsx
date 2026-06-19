@@ -36,6 +36,7 @@ const AdminApplications: React.FC<AdminApplicationsProps> = ({ token }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedApp, setSelectedApp] = useState<ApplicationData | null>(null);
+  const [expandedRole, setExpandedRole] = useState<string | null>(null);
 
   const fetchApplications = async () => {
     setIsLoading(true);
@@ -57,6 +58,13 @@ const AdminApplications: React.FC<AdminApplicationsProps> = ({ token }) => {
     fetchApplications();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const groupedApplications = applications.reduce((acc, app) => {
+    const role = app.jobTitle || app.applyingPosition || 'Other Roles';
+    if (!acc[role]) acc[role] = [];
+    acc[role].push(app);
+    return acc;
+  }, {} as Record<string, ApplicationData[]>);
 
   const renderSection = (title: string, icon: React.ReactNode, fields: { label: string; value: React.ReactNode }[]) => {
     const validFields = fields.filter(f => f.value);
@@ -106,28 +114,30 @@ const AdminApplications: React.FC<AdminApplicationsProps> = ({ token }) => {
                ) : applications.length === 0 ? (
                  <div className="p-8 text-center text-slate-400">No applications yet.</div>
                ) : (
-                 Object.entries(
-                   applications.reduce((acc, app) => {
-                     const role = app.jobTitle || app.applyingPosition || 'Other Roles';
-                     if (!acc[role]) acc[role] = [];
-                     acc[role].push(app);
-                     return acc;
-                   }, {} as Record<string, ApplicationData[]>)
-                 ).map(([role, apps]) => (
-                   <div key={role} className="mb-6">
-                     <div className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 px-2 border-b border-white/5 pb-2">
-                       {role} <span className="text-violet-400 ml-1">({apps.length})</span>
-                     </div>
-                     {apps.map(app => (
-                       <button 
-                         key={app._id}
-                         onClick={() => setSelectedApp(app)}
-                         className={`w-full text-left p-4 rounded-2xl mb-2 transition-all ${selectedApp?._id === app._id ? 'bg-violet-600/20 border border-violet-500/30' : 'hover:bg-white/5 border border-transparent'}`}
-                       >
-                         <div className="font-bold text-white text-sm mb-1">{app.name}</div>
-                         <div className="text-[10px] text-slate-500 uppercase tracking-wider">{new Date(app.createdAt).toLocaleDateString()}</div>
-                       </button>
-                     ))}
+                 (Object.entries(groupedApplications) as [string, ApplicationData[]][]).map(([role, apps]) => (
+                   <div key={role} className="mb-2">
+                     <button 
+                       onClick={() => setExpandedRole(expandedRole === role ? null : role)}
+                       className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all border border-transparent ${expandedRole === role ? 'bg-white/10 border-white/10' : 'hover:bg-white/5 bg-slate-900/50 hover:border-white/5'}`}
+                     >
+                       <div className="font-bold text-slate-300 text-sm text-left line-clamp-1 pr-2">{role}</div>
+                       <div className="text-xs font-bold bg-violet-600/30 text-violet-400 px-2 py-1 rounded-md shrink-0">{apps.length}</div>
+                     </button>
+                     
+                     {expandedRole === role && (
+                       <div className="mt-2 pl-4 pr-2 space-y-2 border-l-2 border-violet-500/30 ml-4 py-2">
+                         {apps.map(app => (
+                           <button 
+                             key={app._id}
+                             onClick={() => setSelectedApp(app)}
+                             className={`w-full text-left p-3 rounded-xl transition-all ${selectedApp?._id === app._id ? 'bg-violet-600/20 border border-violet-500/30' : 'hover:bg-white/5 border border-transparent bg-slate-900/30'}`}
+                           >
+                             <div className="font-bold text-white text-sm mb-1">{app.name}</div>
+                             <div className="text-[10px] text-slate-500 uppercase tracking-wider">{new Date(app.createdAt).toLocaleDateString()}</div>
+                           </button>
+                         ))}
+                       </div>
+                     )}
                    </div>
                  ))
                )}
