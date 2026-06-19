@@ -22,7 +22,7 @@ const AdminSettings: React.FC<AdminSettingsProps> = ({ session, setSession }) =>
     setMessage('');
 
     try {
-      const res = await fetch('/api/auth/profile', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'https://company-site-1eac.onrender.com/api'}` + '/auth/profile', {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',

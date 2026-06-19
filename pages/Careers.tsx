@@ -11,7 +11,7 @@ const Careers: React.FC = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const res = await fetch('/api/jobs');
+        const res = await fetch(`${import.meta.env.VITE_API_URL || 'https://company-site-1eac.onrender.com/api'}` + '/jobs');
         if (res.ok) {
           const data = await res.json();
           const formattedData = data.map((job: JobOpening & { _id: string }) => ({

@@ -37,7 +37,7 @@ const JobDetail: React.FC = () => {
   useEffect(() => {
     const fetchJob = async () => {
       try {
-        const res = await fetch(`/api/jobs`); // Fetch all to find specific, or we can add single fetch API
+        const res = await fetch(`${import.meta.env.VITE_API_URL || 'https://company-site-1eac.onrender.com/api'}` + `/jobs`); // Fetch all to find specific, or we can add single fetch API
         if (!res.ok) throw new Error('Failed to fetch job details');
         const data = await res.json();
         const found = data.find((j: JobDetailData) => j._id === id);

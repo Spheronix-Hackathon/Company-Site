@@ -162,7 +162,7 @@ const Hero: React.FC = () => {
     setIsSubmitting(true);
     
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://company-site-1eac.onrender.com/api';
       const res = await fetch(`${apiUrl}/demo/book`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

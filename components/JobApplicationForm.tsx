@@ -65,7 +65,7 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
     if (files.supportingDocuments) submissionData.append('supportingDocuments', files.supportingDocuments);
 
     try {
-      const res = await fetch('/api/applications', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'https://company-site-1eac.onrender.com/api'}` + '/applications', {
         method: 'POST',
         // Omit Content-Type to let the browser set it to multipart/form-data with boundary
         body: submissionData,

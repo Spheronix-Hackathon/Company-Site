@@ -52,7 +52,7 @@ const AdminJobs: React.FC<AdminJobsProps> = ({ token }) => {
   const fetchJobs = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch('/api/jobs');
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'https://company-site-1eac.onrender.com/api'}` + '/jobs');
       if (!res.ok) throw new Error('Failed to fetch jobs');
       const data = await res.json();
       const formattedData = data.map((job: JobData) => ({
@@ -96,7 +96,7 @@ const AdminJobs: React.FC<AdminJobsProps> = ({ token }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const url = isEditing ? `/api/jobs/${currentJobId}` : '/api/jobs';
+      const url = isEditing ? `/api/jobs/${currentJobId}` : `${import.meta.env.VITE_API_URL || 'https://company-site-1eac.onrender.com/api'}` + '/jobs';
       const method = isEditing ? 'PUT' : 'POST';
       
       const res = await fetch(url, {
@@ -145,7 +145,7 @@ const AdminJobs: React.FC<AdminJobsProps> = ({ token }) => {
   const handleDelete = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this job?')) return;
     try {
-      const res = await fetch(`/api/jobs/${id}`, { 
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'https://company-site-1eac.onrender.com/api'}` + `/jobs/${id}`, { 
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });

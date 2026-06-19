@@ -40,7 +40,7 @@ const AdminApplications: React.FC<AdminApplicationsProps> = ({ token }) => {
   const fetchApplications = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch('/api/applications', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'https://company-site-1eac.onrender.com/api'}` + '/applications', {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (!res.ok) throw new Error('Failed to fetch applications');
@@ -140,7 +140,7 @@ const AdminApplications: React.FC<AdminApplicationsProps> = ({ token }) => {
                         {new Date(selectedApp.createdAt).toLocaleString()}
                       </span>
                       {selectedApp.resumePath && (
-                        <a href={`http://localhost:5000${selectedApp.resumePath}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-500 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors">
+                        <a href={`https://company-site-1eac.onrender.com${selectedApp.resumePath}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-500 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors">
                           <Download size={14} /> Download Resume
                         </a>
                       )}
@@ -300,12 +300,12 @@ const AdminApplications: React.FC<AdminApplicationsProps> = ({ token }) => {
                    {(selectedApp.coverLetterPath || selectedApp.supportingDocumentsPath) && (
                      <div className="bg-slate-900/50 border border-white/5 p-6 rounded-2xl mb-6 flex flex-wrap gap-4">
                         {selectedApp.coverLetterPath && (
-                          <a href={`http://localhost:5000${selectedApp.coverLetterPath}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 text-white border border-white/10 px-4 py-3 rounded-xl text-sm font-bold transition-colors">
+                          <a href={`https://company-site-1eac.onrender.com${selectedApp.coverLetterPath}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 text-white border border-white/10 px-4 py-3 rounded-xl text-sm font-bold transition-colors">
                             <Download size={16} className="text-slate-400" /> Download Cover Letter File
                           </a>
                         )}
                         {selectedApp.supportingDocumentsPath && (
-                          <a href={`http://localhost:5000${selectedApp.supportingDocumentsPath}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 text-white border border-white/10 px-4 py-3 rounded-xl text-sm font-bold transition-colors">
+                          <a href={`https://company-site-1eac.onrender.com${selectedApp.supportingDocumentsPath}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 text-white border border-white/10 px-4 py-3 rounded-xl text-sm font-bold transition-colors">
                             <Download size={16} className="text-slate-400" /> Download Supporting Docs
                           </a>
                         )}
