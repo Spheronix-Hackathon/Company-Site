@@ -33,9 +33,9 @@ const submitApplication = async (req, res) => {
       applyingPosition, preferredLocation, availableJoiningDate, linkedinUrl,
       educationDetails: educationDetails ? JSON.parse(educationDetails) : [],
       certificationDetails: certificationDetails ? JSON.parse(certificationDetails) : [],
-      resumePath: req.files && req.files['resume'] ? `/uploads/${req.files['resume'][0].filename}` : null,
-      coverLetterPath: req.files && req.files['coverLetterFile'] ? `/uploads/${req.files['coverLetterFile'][0].filename}` : null,
-      supportingDocumentsPath: req.files && req.files['supportingDocuments'] ? `/uploads/${req.files['supportingDocuments'][0].filename}` : null,
+      resumePath: req.files && req.files['resume'] ? req.files['resume'][0].path : null,
+      coverLetterPath: req.files && req.files['coverLetterFile'] ? req.files['coverLetterFile'][0].path : null,
+      supportingDocumentsPath: req.files && req.files['supportingDocuments'] ? req.files['supportingDocuments'][0].path : null,
     });
 
     const savedApplication = await application.save();
