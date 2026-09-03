@@ -19,33 +19,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const navigate = useNavigate();
 
   const openRefundModal = () => {
-    setPrevPath(location.pathname);
     setShowRefundModal(true);
-    navigate('/refund-policy');
   };
 
   const closeRefundModal = () => {
     setShowRefundModal(false);
-    if (prevPath && prevPath !== '/refund-policy') {
-      navigate(prevPath);
-    } else {
-      navigate('/', { replace: true });
-    }
   };
 
   const openTermsModal = () => {
-    setPrevPath(location.pathname);
     setShowTermsModal(true);
-    navigate('/terms-and-conditions');
   };
 
   const closeTermsModal = () => {
     setShowTermsModal(false);
-    if (prevPath && prevPath !== '/terms-and-conditions') {
-      navigate(prevPath);
-    } else {
-      navigate('/', { replace: true });
-    }
   };
 
   useEffect(() => {
@@ -272,9 +258,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="mt-24 pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-xs text-slate-600 gap-6">
             <p>&copy; {new Date().getFullYear()} Spheronix Technology Pvt.Ltd. Crafted for the edge.</p>
             <div className="flex gap-8">
-              <a href="#" className="hover:text-slate-400">Privacy Policy</a>
+              <Link to="/privacy-policy" className="hover:text-slate-400">Privacy Policy</Link>
               <button onClick={openRefundModal} className="hover:text-slate-400">Refund Policy</button>
-              <a href="#" className="hover:text-slate-400">Security</a>
+              <Link to="/security" className="hover:text-slate-400">Security</Link>
               <button onClick={openTermsModal} className="hover:text-slate-400">Terms and Conditions</button>
               <Link to="/portal" className="text-violet-400 hover:text-fuchsia-400 font-bold transition-colors">Admin Portal</Link>
             </div>

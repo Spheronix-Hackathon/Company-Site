@@ -13,6 +13,8 @@ import JobDetail from './pages/JobDetail';
 import Contact from './pages/Contact';
 import PortalHub from './pages/Portal/PortalHub';
 import SystemAudit from './pages/SystemAudit';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import Security from './pages/Security';
 import BackgroundEffects from './components/BackgroundEffects';
 
 // Scroll to top on route change
@@ -51,6 +53,8 @@ const App: React.FC = () => {
           <Route path="/careers/:id" element={<JobDetail />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/system-audit" element={<SystemAudit />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/security" element={<Security />} />
         </Route>
       </Routes>
     </Router>
