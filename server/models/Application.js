@@ -1,6 +1,16 @@
 const mongoose = require('mongoose');
 
+// Internship applicants use a shorter form, so these fields only apply to jobs
+const requiredForJobs = function () {
+  return this.applicationType !== 'Internship';
+};
+
 const applicationSchema = new mongoose.Schema({
+  applicationType: {
+    type: String,
+    enum: ['Job', 'Internship'],
+    default: 'Job',
+  },
   jobId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Job',
@@ -15,9 +25,9 @@ const applicationSchema = new mongoose.Schema({
   email: { type: String, required: true, trim: true },
   phone: { type: String, required: true, trim: true },
   mobileNumber: { type: String },
-  currentLocation: { type: String, required: true },
-  dateOfBirth: { type: String, required: true },
-  nationality: { type: String, required: true },
+  currentLocation: { type: String, required: requiredForJobs },
+  dateOfBirth: { type: String, required: requiredForJobs },
+  nationality: { type: String, required: requiredForJobs },
 
   // Professional Info
   currentJobTitle: { type: String },
@@ -52,15 +62,15 @@ const applicationSchema = new mongoose.Schema({
   // Skills
   primarySkills: { type: String, required: true },
   secondarySkills: { type: String },
-  technicalSkills: { type: String, required: true },
+  technicalSkills: { type: String, required: requiredForJobs },
   softSkills: { type: String },
 
   // Details
   applyingPosition: { type: String },
   preferredLocation: { type: String },
   availableJoiningDate: { type: String },
-  portfolioUrl: { type: String, required: true },
-  linkedinUrl: { type: String, required: true },
+  portfolioUrl: { type: String, required: requiredForJobs },
+  linkedinUrl: { type: String, required: requiredForJobs },
 
   // Files
   coverLetter: { type: String }, // Can keep as text for legacy, or URL
@@ -69,9 +79,15 @@ const applicationSchema = new mongoose.Schema({
   supportingDocumentsPath: { type: String },
   status: {
     type: String,
-    enum: ['Pending', 'Reviewed', 'Rejected', 'Accepted'],
+    enum: ['Pending', 'Reviewed', 'Shortlisted', 'Interview Scheduled', 'Selected', 'Rejected', 'Accepted'],
     default: 'Pending',
-  }
+  },
+
+  // Interview
+  interviewDate: { type: String },
+  interviewMode: { type: String },
+  interviewLink: { type: String },
+  interviewNotes: { type: String },
 }, {
   timestamps: true,
 });

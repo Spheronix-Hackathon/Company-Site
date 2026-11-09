@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "start": "node server/index.js",
+    "seed:internships": "node server/seedInternships.js",
     "dev:full": "concurrently \"npm run dev\" \"node server/index.js\"",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "test": "vitest",

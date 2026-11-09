@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import AdminJobs from '../Admin/AdminJobs';
 import AdminApplications from '../Admin/AdminApplications';
+import AdminQueries from '../Admin/AdminQueries';
 import AdminSettings from '../Admin/AdminSettings';
 
 const PortalHub: React.FC = () => {
@@ -16,7 +17,7 @@ const PortalHub: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [activeAdminTab, setActiveAdminTab] = useState<'OVERVIEW' | 'JOBS' | 'APPLICATIONS' | 'SETTINGS'>('OVERVIEW');
+  const [activeAdminTab, setActiveAdminTab] = useState<'OVERVIEW' | 'JOBS' | 'APPLICATIONS' | 'QUERIES' | 'SETTINGS'>('OVERVIEW');
 
   useEffect(() => {
     // Check if token exists in local storage on load
@@ -344,6 +345,12 @@ const PortalHub: React.FC = () => {
                 >
                   Applications
                 </button>
+                <button
+                  onClick={() => setActiveAdminTab('QUERIES')}
+                  className={`flex-1 md:flex-none px-6 py-2 rounded-xl text-sm font-bold transition-all ${activeAdminTab === 'QUERIES' ? 'bg-sky-600 text-white shadow-[0_0_15px_rgba(2,132,199,0.3)]' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
+                >
+                  Contact Queries
+                </button>
                 <button 
                   onClick={() => setActiveAdminTab('SETTINGS')}
                   className={`flex-1 md:flex-none px-6 py-2 rounded-xl text-sm font-bold transition-all ${activeAdminTab === 'SETTINGS' ? 'bg-emerald-600 text-white shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
@@ -360,6 +367,10 @@ const PortalHub: React.FC = () => {
             ) : activeAdminTab === 'APPLICATIONS' ? (
               <div className="lg:col-span-4">
                 <AdminApplications token={session.token || ''} />
+              </div>
+            ) : activeAdminTab === 'QUERIES' ? (
+              <div className="lg:col-span-4">
+                <AdminQueries token={session.token || ''} />
               </div>
             ) : activeAdminTab === 'SETTINGS' ? (
               <div className="lg:col-span-4">

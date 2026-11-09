@@ -30,7 +30,8 @@ const Careers: React.FC = () => {
     fetchJobs();
   }, []);
 
-  const filteredJobs = jobs.filter(job => filter === 'All Roles' || job.experienceLevel === filter);
+  // Short- and long-term internships live on the Internships page
+  const filteredJobs = jobs.filter(job => !job.type.endsWith('Term Internship') && (filter === 'All Roles' || job.experienceLevel === filter));
 
   return (
     <div className="pb-32 bg-[#020617] neural-grid overflow-hidden relative">

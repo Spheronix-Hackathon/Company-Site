@@ -14,6 +14,11 @@ interface ApplicationData {
   jobTitle?: string;
   applyingPosition?: string;
   createdAt: string;
+  status?: string;
+  interviewDate?: string;
+  interviewMode?: string;
+  interviewLink?: string;
+  interviewNotes?: string;
   resumePath?: string;
   coverLetterPath?: string;
   supportingDocumentsPath?: string;
@@ -31,12 +36,59 @@ interface ApplicationData {
   [key: string]: unknown;
 }
 
+const PIPELINE = ['Pending', 'Shortlisted', 'Interview Scheduled', 'Selected', 'Rejected'];
+const statusLabel = (status: string) => (status === 'Pending' ? 'Applied' : status);
+const adminInputClass = 'w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-violet-600';
+const adminLabelClass = 'block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1';
+
 const AdminApplications: React.FC<AdminApplicationsProps> = ({ token }) => {
   const [applications, setApplications] = useState<ApplicationData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedApp, setSelectedApp] = useState<ApplicationData | null>(null);
   const [expandedRole, setExpandedRole] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState('All');
+  const [draft, setDraft] = useState({ status: 'Pending', interviewDate: '', interviewMode: 'Online', interviewLink: '', interviewNotes: '' });
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState('');
+
+  const selectApplication = (app: ApplicationData) => {
+    setSelectedApp(app);
+    setSaveMessage('');
+    setDraft({
+      status: app.status || 'Pending',
+      interviewDate: app.interviewDate || '',
+      interviewMode: app.interviewMode || 'Online',
+      interviewLink: app.interviewLink || '',
+      interviewNotes: app.interviewNotes || '',
+    });
+  };
+
+  const handleDraftChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    setDraft({ ...draft, [e.target.name]: e.target.value });
+  };
+
+  const saveProgress = async () => {
+    if (!selectedApp) return;
+    setIsSaving(true);
+    setSaveMessage('');
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'https://company-site-1eac.onrender.com/api'}` + `/applications/${selectedApp._id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(draft),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(data?.message || 'Failed to save changes');
+      setApplications(apps => apps.map(app => (app._id === data._id ? data : app)));
+      setSelectedApp(data);
+      setSaveMessage('Saved.');
+    } catch (err: unknown) {
+      setSaveMessage(err instanceof Error ? err.message : 'Failed to save changes');
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const fetchApplications = async () => {
     setIsLoading(true);
@@ -59,7 +111,9 @@ const AdminApplications: React.FC<AdminApplicationsProps> = ({ token }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const groupedApplications = applications.reduce((acc, app) => {
+  const visibleApplications = applications.filter(app => statusFilter === 'All' || (app.status || 'Pending') === statusFilter);
+
+  const groupedApplications = visibleApplications.reduce((acc, app) => {
     const role = app.jobTitle || app.applyingPosition || 'Other Roles';
     if (!acc[role]) acc[role] = [];
     acc[role].push(app);
@@ -96,8 +150,8 @@ const AdminApplications: React.FC<AdminApplicationsProps> = ({ token }) => {
     <div className="w-full text-white relative">
       <div className="max-w-[1600px] mx-auto relative z-10">
         <div className="mb-12">
-          <h2 className="text-3xl font-bold mb-2">Job Applications</h2>
-          <p className="text-slate-400 font-medium">Review candidates who applied via the Careers portal.</p>
+          <h2 className="text-3xl font-bold mb-2">Applications</h2>
+          <p className="text-slate-400 font-medium">Review job and internship candidates and manage their interviews.</p>
         </div>
 
         {error && (
@@ -110,13 +164,17 @@ const AdminApplications: React.FC<AdminApplicationsProps> = ({ token }) => {
           {/* Applications List */}
           <div className={`lg:col-span-1 glass rounded-3xl border-white/5 overflow-hidden flex flex-col max-h-[85vh] ${selectedApp ? 'hidden lg:flex' : 'flex'}`}>
              <div className="p-6 border-b border-white/5 bg-slate-900/30">
-               <h3 className="font-bold text-lg">Inbox ({applications.length})</h3>
+               <h3 className="font-bold text-lg mb-3">Inbox ({visibleApplications.length})</h3>
+               <select aria-label="Filter by status" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className={adminInputClass}>
+                 <option value="All">All statuses</option>
+                 {PIPELINE.map(s => <option key={s} value={s}>{statusLabel(s)}</option>)}
+               </select>
              </div>
              
              <div className="overflow-y-auto flex-1 p-2">
                {isLoading ? (
                  <div className="p-8 text-center text-slate-400">Loading...</div>
-               ) : applications.length === 0 ? (
+               ) : visibleApplications.length === 0 ? (
                  <div className="p-8 text-center text-slate-400">No applications yet.</div>
                ) : (
                  (Object.entries(groupedApplications) as [string, ApplicationData[]][]).map(([role, apps]) => (
@@ -134,11 +192,11 @@ const AdminApplications: React.FC<AdminApplicationsProps> = ({ token }) => {
                          {apps.map(app => (
                            <button 
                              key={app._id}
-                             onClick={() => setSelectedApp(app)}
+                             onClick={() => selectApplication(app)}
                              className={`w-full text-left p-3 rounded-xl transition-all ${selectedApp?._id === app._id ? 'bg-violet-600/20 border border-violet-500/30' : 'hover:bg-white/5 border border-transparent bg-slate-900/30'}`}
                            >
                              <div className="font-bold text-white text-sm mb-1">{app.name}</div>
-                             <div className="text-[10px] text-slate-500 uppercase tracking-wider">{new Date(app.createdAt).toLocaleDateString()}</div>
+                             <div className="text-[10px] text-slate-500 uppercase tracking-wider">{new Date(app.createdAt).toLocaleDateString()} · <span className="text-violet-400">{statusLabel(app.status || 'Pending')}</span></div>
                            </button>
                          ))}
                        </div>
@@ -192,6 +250,45 @@ const AdminApplications: React.FC<AdminApplicationsProps> = ({ token }) => {
                          <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Phone / Mobile</div>
                          <div className="text-sm font-medium text-white">{selectedApp.phone || selectedApp.mobileNumber}</div>
                        </div>
+                     </div>
+                   </div>
+
+                   {/* Hiring Progress */}
+                   <div className="bg-violet-600/10 border border-violet-500/20 p-6 rounded-2xl mb-6">
+                     <h3 className="text-sm font-bold text-slate-300 flex items-center gap-2 mb-4 uppercase tracking-widest border-b border-white/5 pb-3">
+                       <Calendar size={16} className="text-violet-400" /> Hiring Progress
+                     </h3>
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                       <div>
+                         <label htmlFor="status" className={adminLabelClass}>Status</label>
+                         <select id="status" name="status" value={draft.status} onChange={handleDraftChange} className={adminInputClass}>
+                           {(PIPELINE.includes(draft.status) ? PIPELINE : [draft.status, ...PIPELINE]).map(s => <option key={s} value={s}>{statusLabel(s)}</option>)}
+                         </select>
+                       </div>
+                       <div>
+                         <label htmlFor="interviewDate" className={adminLabelClass}>Interview Date & Time</label>
+                         <input id="interviewDate" type="datetime-local" name="interviewDate" value={draft.interviewDate} onChange={handleDraftChange} className={adminInputClass} />
+                       </div>
+                       <div>
+                         <label htmlFor="interviewMode" className={adminLabelClass}>Mode</label>
+                         <select id="interviewMode" name="interviewMode" value={draft.interviewMode} onChange={handleDraftChange} className={adminInputClass}>
+                           <option>Online</option><option>Phone</option><option>In Person</option>
+                         </select>
+                       </div>
+                       <div>
+                         <label htmlFor="interviewLink" className={adminLabelClass}>Meeting Link / Venue</label>
+                         <input id="interviewLink" name="interviewLink" value={draft.interviewLink} onChange={handleDraftChange} className={adminInputClass} />
+                       </div>
+                       <div className="md:col-span-2">
+                         <label htmlFor="interviewNotes" className={adminLabelClass}>Notes</label>
+                         <textarea id="interviewNotes" name="interviewNotes" rows={3} value={draft.interviewNotes} onChange={handleDraftChange} className={adminInputClass} />
+                       </div>
+                     </div>
+                     <div className="flex items-center gap-4 mt-4">
+                       <button onClick={saveProgress} disabled={isSaving} className="bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white px-6 py-2 rounded-lg text-sm font-bold transition-colors">
+                         {isSaving ? 'Saving...' : 'Save Progress'}
+                       </button>
+                       {saveMessage && <span role="status" className="text-sm text-slate-300">{saveMessage}</span>}
                      </div>
                    </div>
 

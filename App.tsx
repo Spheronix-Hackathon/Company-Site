@@ -10,6 +10,7 @@ import CaseStudies from './pages/CaseStudies';
 import About from './pages/About';
 import Careers from './pages/Careers';
 import JobDetail from './pages/JobDetail';
+import Internships from './pages/Internships';
 import Contact from './pages/Contact';
 import PortalHub from './pages/Portal/PortalHub';
 import SystemAudit from './pages/SystemAudit';
@@ -51,6 +52,7 @@ const App: React.FC = () => {
           <Route path="/about" element={<About />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/careers/:id" element={<JobDetail />} />
+          <Route path="/internships" element={<Internships />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/system-audit" element={<SystemAudit />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />

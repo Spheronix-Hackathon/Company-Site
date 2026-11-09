@@ -235,7 +235,7 @@ const AdminJobs: React.FC<AdminJobsProps> = ({ token }) => {
                     <div>
                       <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Type</label>
                       <select name="type" value={formData.type} onChange={handleInputChange} className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-violet-600 appearance-none">
-                        <option>Full-time</option><option>Part-time</option><option>Training</option><option>Internship</option>
+                        <option>Full-time</option><option>Part-time</option><option>Training</option><option>Internship</option><option>Short-Term Internship</option><option>Long-Term Internship</option>
                       </select>
                     </div>
                     <div>

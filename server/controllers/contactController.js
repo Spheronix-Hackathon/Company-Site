@@ -26,6 +26,20 @@ const submitContact = async (req, res) => {
   }
 };
 
+// @desc    Get all contact queries
+// @route   GET /api/contact
+// @access  Private/Admin
+const getContacts = async (req, res) => {
+  try {
+    const contacts = await Contact.find().sort({ date: -1 });
+    res.status(200).json(contacts);
+  } catch (err) {
+    console.error('Error fetching contact queries:', err);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
 module.exports = {
-  submitContact
+  submitContact,
+  getContacts
 };
