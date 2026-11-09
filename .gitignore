@@ -23,6 +23,11 @@ dist-ssr
 *.sln
 *.sw?
 
+# Private keys and test output
+*.pem
+playwright-report
+test-results
+
 # Environment Variables
 .env
 .env.production

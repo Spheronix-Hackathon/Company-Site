@@ -23,9 +23,9 @@ const upload = multer({
   limits: { fileSize: 500 * 1024 }, // 500KB limit
 });
 const { bookDemo } = require('../controllers/demoController');
-const { submitContact } = require('../controllers/contactController');
+const { submitContact, getContacts } = require('../controllers/contactController');
 const { getJobs, createJob, updateJob, deleteJob } = require('../controllers/jobController');
-const { submitApplication, getApplications } = require('../controllers/applicationController');
+const { submitApplication, getApplications, updateApplication } = require('../controllers/applicationController');
 const { loginUser, updateUserProfile } = require('../controllers/authController');
 const { protect, admin } = require('../middleware/authMiddleware');
 
@@ -33,7 +33,7 @@ const { protect, admin } = require('../middleware/authMiddleware');
 router.post('/demo/book', bookDemo);
 
 // Contact Route
-router.post('/contact', submitContact);
+router.route('/contact').post(submitContact).get(protect, admin, getContacts);
 
 // Auth Routes
 router.post('/auth/login', loginUser);
@@ -51,5 +51,6 @@ router.route('/applications')
     { name: 'supportingDocuments', maxCount: 1 }
   ]), submitApplication)
   .get(protect, admin, getApplications);
+router.patch('/applications/:id', protect, admin, updateApplication);
 
 module.exports = router;

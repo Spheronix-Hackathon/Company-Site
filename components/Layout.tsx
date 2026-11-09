@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, Linkedin, Twitter, Github, LayoutDashboard, Instagram } from 'lucide-react';
 import TermsAndConditionsModal from './TermsAndConditionsModal';
 import RefundPolicyModal from './RefundPolicyModal';
+import companyLogo from '../assets/certificates/Company logo.jpeg';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -41,11 +42,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   }, []);
 
   const navLinks = [
+    { name: 'About', href: '/about' },
     { name: 'Services', href: '/services' },
     { name: 'Training', href: '/training' },
-    { name: 'Case Studies', href: '/case-studies' },
-    { name: 'About', href: '/about' },
+    { name: 'Internships', href: '/internships' },
     { name: 'Careers', href: '/careers' },
+    { name: 'Case Studies', href: '/case-studies' },
     { name: 'Contact', href: '/contact' },
   ];
 
@@ -64,23 +66,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="flex justify-between items-center">
             <div className="flex items-center">
               <Link to="/" className="flex items-center group">
-                <img 
-                  src="logo.png" 
-                  alt="Spheronix Technology" 
-                  className="h-12 w-auto object-contain transition-transform group-hover:scale-105"
-                  onError={(e) => {
-                    // Fallback in case logo.png isn't found during initial setup
-                    e.currentTarget.style.display = 'none';
-                    e.currentTarget.parentElement?.classList.add('flex', 'items-center', 'gap-3');
-                    const fallback = document.createElement('div');
-                    fallback.className = "w-10 h-10 bg-gradient-to-br from-violet-600 to-fuchsia-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-[0_0_15px_rgba(139,92,246,0.5)]";
-                    fallback.innerText = "S";
-                    const text = document.createElement('span');
-                    text.className = "text-2xl font-bold text-white tracking-tight";
-                    text.innerText = "Spheronix";
-                    e.currentTarget.parentElement?.appendChild(fallback);
-                    e.currentTarget.parentElement?.appendChild(text);
-                  }}
+                <img
+                  src={companyLogo}
+                  alt="Spheronix Technologies Pvt. Ltd."
+                  className="h-11 w-auto object-contain bg-white rounded-lg px-1 transition-transform group-hover:scale-105"
                 />
               </Link>
             </div>
